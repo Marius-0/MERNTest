@@ -1,0 +1,11 @@
+accountNumber,firstName,secondName,displayName,email,password,groups,chats,verified
+68101393ao,Darien,Fernandez,,darien@mern.net,pass,[],[],true
+631110gmgb,Tulisa,Simon,Tully Simon,tullys@mern.net,pass,[],[],true
+7608099nsl,Ada,Mueller,Ada K. M.,adakm@mern.net,pass,[],[],true
+810903jx45,Aysha,Curry,Jane Curry,janecurry@mern.net,pass,[],[],true
+7706156wjp,Farhan,Reyna,Farhan Jay Reyna,farhanjay@mern.net,pass,[],[],true
+9309148lyq,Hajrah,Brewer,Hajrah Lang-Brewer,hajrahlb@mern.net,pass,[],[],true
+n3w2yf81,,,Morris Sweeney,morris@mern.net,pass,[],[],false
+6w9i2u71,,,random guy,random@mern.net,pass,[],[],false
+tri5lyn6,Aleah,Salter,Ali Salter,ali@mern.net,pass,[],[],false
+42lntp61,Roche,,Roche,roche@mern.net,pass,[],[],false
