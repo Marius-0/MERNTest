@@ -1,7 +1,9 @@
+body {
+  background-color: rgb(240, 242,245);
+}
+
 .App {
   text-align: center;
-  background-color: rgb(240, 242,245);
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;

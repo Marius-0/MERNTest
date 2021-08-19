@@ -1,14 +1,12 @@
 import './App.css';
 
+// import { data } from './data.js';
 import { makeStyles } from '@material-ui/core/styles';
-import { white } from '@material-ui/core/colors';
-import { data } from './data.js';
-import moment from 'moment';
-import React from 'react'
-import Post from './components/post.js';
+import React, { useEffect, useState } from 'react'
+import PostList from './components/post.js';
+import MakePost from './components/create_post.js';
+import PostDialog from './components/new_post_dialog.js';
 import PrimarySearchAppBar from './components/appbar.js';
-
-
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -28,15 +26,70 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
+function Feed() {
+	const [posts, setPosts] = useState([]);
+
+	const [open, setOpen] = React.useState(false)
+	const handleOpen = () => {
+		setOpen(true)
+		console.log('Opened')
+	}
+	const handleClose = () => setOpen(false)
+
+	const addPost = (newPost) => setPosts([newPost, ...posts])
+	const removePost = (id) => setPosts(posts.filter(x => id !== x.id))
+
+	async function getItems() {
+		const data = await fetch('http://localhost:5000/api/posts')
+			.then(data => data.json())
+			.catch(error => {console.error('Error occured when fetching posts:', error)});
+		return data;
+	}
+
+	useEffect(async () => {
+		await getItems()
+			.then(items => setPosts(items))
+	}, [posts.length])
+
+	async function postData(url = '', data = {}) {
+		const response = await fetch(url, {
+			method: 'POST', 
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		});
+
+		return response.json(); 
+	}
+
+	const handlePost = (data) => {
+		postData('http://localhost:5000/api/posts', data)
+		.then(response => {
+			setPosts([response, ...posts])
+		});
+		handleClose()
+	}
+
+	return (
+		<>
+			<MakePost onOpen={handleOpen} user="Kangey"/>
+			<PostDialog open={open} onClose={handleClose} onPost={handlePost} user="Kangey" />
+			<PostList posts={posts} />
+		</>
+	)
+}
+
 function App() {
 	const classes = useStyles();
+	const [newPostAlert, setNewPostAlert] = useState(0);
+
+
 
 	return (
 		<div className="App">
 			<PrimarySearchAppBar></PrimarySearchAppBar>
-			{data.map((post) => (
-				<Post {...post}></Post>
-			))}
+			<Feed/>
 		</div>
 	);
 }

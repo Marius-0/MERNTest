@@ -3,14 +3,13 @@ import mongoose from 'mongoose'
 const postSchema = mongoose.Schema({
   userID: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true
   }, 
-  body: {
+  text: {
     type: String
   },
-  media_: [ String ], 
+  media: [ String ], 
   link: String,
-  likes:{
+  likes: {
     type: [ mongoose.Schema.Types.ObjectId ]
   },
   comments: [{
@@ -19,7 +18,7 @@ const postSchema = mongoose.Schema({
   }], 
   tags: {
     type: [ mongoose.Schema.Types.ObjectId ]
-  }
+  },
 }, {
   timestamps: true
 })

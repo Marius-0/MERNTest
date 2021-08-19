@@ -1,4 +1,4 @@
-import { Typography, ListItem, ListItemAvatar, ListItemText, Divider, Avatar} from '@material-ui/core';
+import { Typography, ListItem, ListItemAvatar, ListItemText, Avatar} from '@material-ui/core';
 import moment from 'moment';
 import React from 'react';
 
