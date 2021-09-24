@@ -1,5 +1,7 @@
 import asyncHandler from 'express-async-handler'
 import express from 'express'
+import mongoose from 'mongoose'
+const { ObjectId } = mongoose.Types;
 
 export default class baseRouter {
   constructor(model) {
@@ -9,20 +11,22 @@ export default class baseRouter {
   get router() {
     const router = express.Router();
 
+    router.all('/', asyncHandler(async (request, response, next) => {
+      next()
+    }))
+
     router.get('/', asyncHandler(async (request, response, next) => {
       console.log('get');
       await this.model.find().exec()
         .then(resource =>  response.json(resource))
         .catch(err => response.status(400).json('Error' + err));
-      next();
     }))
 
     router.get('/:id', asyncHandler(async (request, response, next) => {
-      console.log('getbyid');
-      await this.model.findById(request.params.id).exec()
+      console.log('id:', request.params.id);
+      await this.model.findById(ObjectId(request.params.id)).exec()
         .then(resource =>  response.json(resource))
         .catch(err =>  next(err))
-      next();
     }))
 
     router.post('/', asyncHandler(async (request, response, next) => {
@@ -30,7 +34,6 @@ export default class baseRouter {
       await this.model.create(request.body)
         .then(resource => response.json(resource))
         .catch(err => next(err))
-        next();
     }))
 
     router.delete('/:id', asyncHandler(async (request, response, next) => {
@@ -38,7 +41,6 @@ export default class baseRouter {
       await this.model.deleteOne({ _id: request.params.id })
         .then(console.log('Item deleted'))
         .catch(err => next(err))
-        next();
     }))
   
     return router;

@@ -1,89 +1,76 @@
 import Comment from './comment.js';
+import {NewComment} from './comment.js';
 
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import LikeEmpty from '@material-ui/icons/ThumbUpOutlined';
-import Like from '@material-ui/icons/ThumbUp';
-import CommentIcon from '@material-ui/icons/ChatBubbleOutline';
-
-import { Card, CardHeader, CardContent, Typography, CardActions, 
-					List, Avatar, IconButton, Menu, MenuItem, Button } from '@material-ui/core';
+import { MoreVert, ThumbUpOutlined, ThumbUp, ChatBubbleOutline } from '@material-ui/icons';
+import {
+  Card, CardHeader, CardContent, Typography, CardActions,
+  List, Avatar, IconButton, Menu, MenuItem, Button
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { red } from '@material-ui/core/colors';
 import moment from 'moment';
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
+import '../static/flickity copy.css'
+
+import Flickity from 'react-flickity-component'
 
 // import {get, post} from '../services/fetch_crud.js'
 
 const useStyles = makeStyles({
-  root: {
-    width: 500,
-		textAlign: 'left',
+  main: {
+    width: '500px',
+    textAlign: 'left',
     margin: "10px 0px"
-  },
-	media: {
-    height: 0,
-    paddingTop: '56.25%', // 16:9
   },
   postText: {
     fontSize: 14,
-		paddingTop: 0,
+    paddingTop: 0,
   },
-  commentStyle: {
-		backgroundColor: 'lightgray',
-  },
-	avatar: {
+  avatar: {
     backgroundColor: red[500],
   },
-	actionsBar: {
-		justifyContent: 'space-evenly',
-		borderTop: "1px solid lightgray",
-		borderBottom: "1px solid lightgray",
-		margin: "0px 16px"
-	},
-	medias: {
-		margin: "0px 16px"
-	},
-	gridList: {
-		maxHeight: 585,
-		width: 468,
-    margin: "0px 16px"
-	}, 
-	gridImg: {
-    maxHeight: 585,
-		objectFit: "contain",
-		height: "100%",
-		width: "100%",
-    overflow: 'scroll',
-	},
-  imgNum: {
-    float: 'right',
-    position: 'relative',
-    bottom: '35px',
-    right: '10px',
-    color: 'lightgray',
-    fontSize: '16px',
+  actionsBar: {
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    margin: "0px 16px",
+    padding: "4px 0px",
+    gap: "4px"
+  },
+  actions: {
+    fontSize: 16,
+    textIndent: 4,
+    flexGrow: 1,
+    padding: "8px",
+    borderRadius: "4px"
+  },
+  divider: {
+    backgroundColor: "lightgray",
+    border: "none",
+    margin: "0px 16px",
+    height: "1px"
   }
 });
 
-function PostMenu(ObjectID){
+function PostMenu({ id, removePost }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
-  const handleDelete = async() => {
-    await fetch(`http://localhost:5000/api/posts/${ObjectID.id}`, {
+  const handleDelete = async () => {
+    await fetch(`http://localhost:5000/api/posts/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-type': 'application/json'
       }
     });
+    removePost(id)
     handleClose()
   }
 
-  return(
+  return (
     <>
       <IconButton aria-controls="post-menu" aria-haspopup="true" onClick={handleClick}>
-        <MoreVertIcon />
+        <MoreVert />
       </IconButton>
       <Menu
         id="post-menu"
@@ -98,95 +85,54 @@ function PostMenu(ObjectID){
   )
 }
 
-function Post({_id, media, userID, createdAt, text, likes, comments}){
+function Carousel({ media }) {
+  const flickityOptions = {}
+  
+  return (
+    <Flickity
+      className='carousel'
+      options={flickityOptions}
+    >
+      {media.map((item, index) => (
+        <div className="carousel-cell" key={index}>
+          <img src={item} alt=""/>
+        </div>
+        ))}
+    </Flickity>
+  )
+}
+
+function Post({ _id, media, userID, createdAt, text, likes, comments, removePost }) {
   const classes = useStyles();
-	const [imgIndex, setImgIndex] = useState(0);
-  const getTime = time_var => moment( time_var ).fromNow();
+  const getTime = time_var => moment(time_var).fromNow();
   const [likeStatus, setLike] = useState(false);
+  const [showComment, setShowComment] = useState(false);
 
-  const handleToggleLike = () => {
-    setLike(!likeStatus)
-  }
-
-  function nextImg(e) {
-    e.preventDefault();
-    let nextIndex = (imgIndex + 1) % (media.length);
-    e.currentTarget.children[imgIndex].style.display = 'none';
-    e.currentTarget.children[nextIndex].style.display = 'block';
-    setImgIndex(nextIndex);
-  }
+  const handleShowComment = () => setShowComment(true)
+  const handleToggleLike = () => setLike(!likeStatus)
 
   const logData = () => console.log(`id: ${_id} | media: ${media} | user: ${userID} | time: ${createdAt} | text: ${text} | likes: ${likes} | comments: ${comments}`)
 
-  function toggleLike() {
-    const url = `http://localhost:5000/api/posts/${_id.id}`
-    const params = { 'userID': userID }
-    fetch(url, {
-      method: "PATCH",
-      headers:{
-        "Content-type": "application/json"
-      },
-      body: JSON.stringify({
-        
-      })
-    })
-  }
-  /*
-  async function getItems() {
-		const data = await fetch('http://localhost:5000/api/posts/')
-			.then(data => data.json())
-			.catch(error => {console.error('Error occured when fetching posts:', error)});
-      console.log('data:', data);
-		return await data;
-	}
-
-  useEffect(() => {
-		let mounted = true;
-		getItems()
-			.then(data => {
-				if(mounted) {
-					if(data.likes.includes(userID))
-            setLike(true)
-				}
-			})
-		return () => mounted = false;
-	}, [])
-  */
-  function handleLikeStatus() {
-    const url = `http://localhost:5000/api/posts/${_id.id}`;
-    fetch(url, {
-      method: "GET",
-      headers:{
-        "Content-type": "application/json"
-      },
-    }).then(data => {
-      
-    })
-  }
-  
   return (
-    <Card className={classes.root}>
+    <Card className={classes.main}>
       {logData()}
       <CardHeader
-        avatar={ <Avatar aria-label="avatar" className={classes.avatar}> R </Avatar> }
-        action={ <PostMenu id={_id} /> }
-        title = {userID}
-        subheader = {getTime(createdAt)}
+        avatar={<Avatar aria-label="avatar" className={classes.avatar}> R </Avatar>}
+        action={<PostMenu id={_id} removePost={removePost} />}
+        title={userID}
+        subheader={getTime(createdAt)}
       />
-      
+
       <CardContent className={classes.postText}>
         <Typography color="textPrimary" component="p">
           {text}
         </Typography>
       </CardContent>
-
-      {media.length > 0 &&
-        <div id="carousel" className={classes.gridList} onClick={nextImg}>
-          {media.map((item, index) => (
-            <img src={item.url} alt={item.title} className={classes.gridImg} style={{display: index > 0 ? "none" : "block"}} loading="lazy"/>
-          ))}
-          <div className={classes.imgNum}>{(imgIndex + 1)+'/'+media.length}</div>
-        </div>
+      
+      
+      {media.length > 0
+        ? <Carousel media={media} />
+        : <hr className={classes.divider}/>
       }
       {likes.length > 0 &&
         <CardContent>
@@ -195,14 +141,21 @@ function Post({_id, media, userID, createdAt, text, likes, comments}){
           </Typography>
         </CardContent>
       }
-      <CardActions className={classes.actionsBar}>
-        <IconButton aria-label="like" onClick={handleToggleLike}>
-          {likeStatus  ? <LikeEmpty /> : <Like />}
+      
+      <div className={classes.actionsBar}>
+        <IconButton aria-label="like" className={classes.actions} onClick={handleToggleLike}>
+          {likeStatus ? <ThumbUpOutlined /> : <ThumbUp />}
         </IconButton>
-        <IconButton aria-label="comment">
-          <CommentIcon />
+        <IconButton aria-label="comment" className={classes.actions} onClick={handleShowComment}>
+          <ChatBubbleOutline />
         </IconButton>
-      </CardActions>
+      </div>
+      {showComment &&
+        <>
+          <hr className={classes.divider}/>
+          <NewComment />
+        </>
+      }
       {comments.length > 0 &&
         <CardContent>
           <Typography className={classes.pos} color="textSecondary">
@@ -219,18 +172,14 @@ function Post({_id, media, userID, createdAt, text, likes, comments}){
   )
 }
 
-export default function PostList({posts}){
-  //const [posts, setPosts] = useState([]);
-  console.log('posts:', posts);
-
-
-
-  return(
+export default function PostList({ posts, removePost }) {
+  return (
     <>
-      {posts.map((post) => (
-        <Post key={post._id} {...post}></Post>
-      ))}
+      {posts
+        .sort((a, b) => a.createdAt < b.createdAt)
+        .map((post) => (
+          <Post key={post._id} {...post} removePost={removePost}></Post>
+        ))}
     </>
   )
 }
-

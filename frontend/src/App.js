@@ -1,144 +1,48 @@
 import './App.css';
-
-// import { data } from './data.js';
 import { makeStyles } from '@material-ui/core/styles';
-import React, { useEffect, useState } from 'react'
-import PostList from './components/post.js';
-import MakePost from './components/create_post.js';
-import PostDialog from './components/new_post_dialog.js';
-import PrimarySearchAppBar from './components/appbar.js';
+import React, { createContext, useEffect, useState } from 'react'
 
-const useStyles = makeStyles((theme) => ({
-	root: {
-    flexGrow: 1,
-		width: '100%',
-		backgroundColor: "#fff"
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-	color: {
-		backgroundColor: "#fff",
-		color: "#000"
-	}
-}));
 
-function Feed() {
-	const [posts, setPosts] = useState([]);
+import Signup from './components/signup.js'
+import Login from './components/login.js'
+import Homepage from './components/homepage.js'
 
-	const [open, setOpen] = React.useState(false)
-	const handleOpen = () => {
-		setOpen(true)
-		console.log('Opened')
-	}
-	const handleClose = () => setOpen(false)
+import {
+	BrowserRouter as Router,
+	Switch,
+	Route,
+	Link,
+	Redirect,
+} from 'react-router-dom'
+import { get } from './services/fetch_crud.js';
 
-	const addPost = (newPost) => setPosts([newPost, ...posts])
-	const removePost = (id) => setPosts(posts.filter(x => id !== x.id))
+import UserProvider from './components/userContext'
 
-	async function getItems() {
-		const data = await fetch('http://localhost:5000/api/posts')
-			.then(data => data.json())
-			.catch(error => {console.error('Error occured when fetching posts:', error)});
-		return data;
-	}
+function App() {
+	const API_URL = 'localhost:5000'
+	const [userInfo, setUserInfo] = useState(null)
 
-	useEffect(async () => {
-		await getItems()
-			.then(items => setPosts(items))
-	}, [posts.length])
+	useEffect(() => {
+		setUserInfo(get(API_URL + '/account/info'))
+	}, [])
 
-	async function postData(url = '', data = {}) {
-		const response = await fetch(url, {
-			method: 'POST', 
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(data)
-		});
-
-		return response.json(); 
-	}
-
-	const handlePost = (data) => {
-		postData('http://localhost:5000/api/posts', data)
-		.then(response => {
-			setPosts([response, ...posts])
-		});
-		handleClose()
-	}
+	//const UserContext = createContext('Username')
 
 	return (
-		<>
-			<MakePost onOpen={handleOpen} user="Kangey"/>
-			<PostDialog open={open} onClose={handleClose} onPost={handlePost} user="Kangey" />
-			<PostList posts={posts} />
-		</>
+		<Router>
+			<Switch>
+				<Route path="/login" component={Login} />
+				<Route path="/signup" component={Signup} />
+				<Route path="/" >
+					{!userInfo ? <Redirect to="/login" /> : 
+						<UserProvider value={userInfo}>
+							<Homepage />
+						</UserProvider>
+					}
+				</Route>
+			</Switch>
+		</Router>
 	)
 }
 
-function App() {
-	const classes = useStyles();
-	const [newPostAlert, setNewPostAlert] = useState(0);
-
-
-
-	return (
-		<div className="App">
-			<PrimarySearchAppBar></PrimarySearchAppBar>
-			<Feed/>
-		</div>
-	);
-}
-
 export default App;
-
-/*
-import React, {useEffect, useState} from 'react'
-import axios from 'axios'
-
-const App = () => {
-  const [users, setUsers] = useState([])
-  const getData = async() => {
-    const res = await axios.get('/api/users')
-    setUsers(res.data)
-  }
-
-  useEffect(() => {
-    getData()
-  }, [])
- 
-  return (
-    <div>
-      {users.map(u => <h4 key={u._id}>displayName : {u.displayName}</h4>)}
-    </div>
-  )
-}
-
-export default App
-
-
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu'
-
-			<div className={classes.root}>
-				<AppBar position="static" className={classes.colorch}>
-					<Toolbar className={classes.colorch} >
-						<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-							<MenuIcon />
-						</IconButton>
-						<Typography variant="h6" className={classes.title}>
-							News
-						</Typography>
-						<Button color="inherit">Login</Button>
-					</Toolbar>
-				</AppBar>
-			</div>
-*/

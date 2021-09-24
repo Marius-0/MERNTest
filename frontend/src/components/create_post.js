@@ -9,7 +9,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import { red } from '@material-ui/core/colors'
 import React from 'react'
-import PostDialog from "./new_post_dialog.js"
+import PostDialog from "./post_dialog.js"
 
 const useStyles = makeStyles({
     root: {
@@ -17,14 +17,7 @@ const useStyles = makeStyles({
         textAlign: 'left',
         margin: "10px 0px"
     },
-    postText: {
-        fontSize: 14,
-        paddingTop: 0,
-        paddingBottom: "8px"
-    },
-    commentStyle: {
-        backgroundColor: 'lightgray',
-    },
+
     avatar: {
         backgroundColor: red[500],
         marginRight: "8px"
@@ -40,16 +33,6 @@ const useStyles = makeStyles({
         flexGrow: 1,
         padding: "8px",
         borderRadius: "5%"
-    },
-    medias: {
-        margin: "0px 16px"
-    },
-    inputTextq: {
-        width: "100%",
-        backgroundColor: "rgb(240, 242,245)",
-        borderRadius: "50px",
-        paddingBottom: "2px",
-        paddingLeft: "8px",
     },
     inputText: {
         width: "100%",
@@ -71,7 +54,6 @@ const useStyles = makeStyles({
 
 export default function CreatePost({ onOpen, user }) {
     const classes = useStyles();
-    const handleOpen = () => onOpen();
 
     return (
         <Card className={classes.root}>
@@ -82,7 +64,7 @@ export default function CreatePost({ onOpen, user }) {
                     className={classes.inputText} 
                     id="btn_createPost" 
                     disableRipple
-                    onClick={handleOpen}>
+                    onClick={onOpen}>
                     {`What's on your mind ${user}?`}
                 </Button>
             </div>

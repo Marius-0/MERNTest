@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 const userSchema = mongoose.Schema({
   accountNumber: {
     type: String,
-    required: true,
+    required: false,
     unique:true
   },
   firstName: {
@@ -18,10 +18,17 @@ const userSchema = mongoose.Schema({
   email: {
       type: String,
       required: true,
-      unique:true
+      unique:true,
+      sparse: true
   },
   password: {
       type: String
+  },
+  dateOfBirth: {
+    type: Date
+  },
+  gender: {
+    type: String
   },
   groups: {
     type: [ mongoose.Schema.Types.ObjectId ]
@@ -33,6 +40,14 @@ const userSchema = mongoose.Schema({
     type: Boolean,
     required: true,
     default: false
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin', 'master'],
+    default: 'user'
+  },
+  token: {
+    type: String
   }
 }, {
   timestamps: true
