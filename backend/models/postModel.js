@@ -1,28 +1,62 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
-const postSchema = mongoose.Schema({
-  userID: {
-    type: mongoose.Schema.Types.ObjectId,
-  }, 
-  text: {
-    type: String
+const postSchema = mongoose.Schema(
+  {
+    userID: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+    text: {
+      type: String,
+    },
+    media: [String],
+    link: String,
+    likes: {
+      type: [mongoose.Schema.Types.ObjectId],
+    },
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment",
+      },
+      // {
+      //   userID: {
+      //     type: mongoose.Schema.Types.ObjectId,
+      //     required: true,
+      //   },
+      //   userName: {
+      //     type: String,
+      //     required: true,
+      //   },
+      //   body: {
+      //     type: String,
+      //     required: true,
+      //   },
+      //   likes: {
+      //     type: [
+      //       {
+      //         userId: mongoose.Schema.Types.ObjectId,
+      //         userName: String,
+      //       },
+      //       {
+      //         timestamps: true,
+      //       },
+      //     ],
+      //     defualt: [],
+      //   },
+      // },
+      // {
+      //   timestamps: true,
+      // },
+    ],
+    tags: {
+      type: [mongoose.Schema.Types.ObjectId],
+    },
   },
-  media: [ String ], 
-  link: String,
-  likes: {
-    type: [ mongoose.Schema.Types.ObjectId ]
-  },
-  comments: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Comment'
-  }], 
-  tags: {
-    type: [ mongoose.Schema.Types.ObjectId ]
-  },
-}, {
-  timestamps: true
-})
+  {
+    timestamps: true,
+  }
+);
 
-const Post = mongoose.model('Post', postSchema)
+const Post = mongoose.model("Post", postSchema);
 
-export default Post
+export default Post;
