@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { get, post } from "../services/fetch_crud.js";
 import { makeStyles } from "@material-ui/core/styles";
 
 import PostList from "./post.js";
@@ -7,6 +6,7 @@ import MakePost from "./create_post.js";
 import PostDialog from "./post_dialog.js";
 import PrimarySearchAppBar from "./appbar.js";
 import axios from "axios";
+import Post from "../post/post";
 
 const useStyles = makeStyles((theme = undefined) => ({
   main: {
@@ -36,18 +36,14 @@ export default function Homepage({ auth }) {
     axios
       .get("http://localhost:3000/api/posts")
       .then((res) => {
-        setPosts(res.data ?? []);
+        console.log(res.data);
+        setPosts(res.data);
       })
       .catch((err) => console.log(err));
-  /*
-    get("http://localhost:3000/api/posts")
-      .then((items) => setPosts(items ?? []))
-      .catch((err) => console.log(err))
-      .then(console.log("get posts => homepage.js"));
-  */
+
   useEffect(() => {
     getPosts();
-  }, [posts.length]);
+  }, []);
 
   const handlePost = (data) => {
     axios
@@ -67,8 +63,10 @@ export default function Homepage({ auth }) {
       <div className={classes.main}>
         <MakePost onOpen={handleOpen} />
         <PostDialog open={open} onClose={handleClose} onPost={handlePost} />
-        <PostList posts={posts} removePost={removePost} />
+        <Post posts={posts} />
       </div>
     </>
   );
 }
+
+// <PostList posts={posts} removePost={removePost} />

@@ -1,8 +1,6 @@
 import { Grid, Paper, TextField, Button } from "@material-ui/core";
-import { get, post, postFunc } from "../services/fetch_crud.js";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useState } from "react";
-import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+import React from "react";
 import { Link, useHistory, withRouter } from "react-router-dom";
 import axios from "axios";
 

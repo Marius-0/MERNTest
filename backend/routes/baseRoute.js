@@ -57,3 +57,7 @@ export default class baseRouter {
     return router;
   }
 }
+
+export function baseroute(model) {
+  return new baseRouter(model).router;
+}

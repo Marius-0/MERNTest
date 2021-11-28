@@ -1,0 +1,52 @@
+$color-one: #f0f2f5;
+$color-two: #bbb;
+$line-color: #ced0d4;
+
+$img_dim: 32px;
+
+@import url(https://fonts.googleapis.com/css?family=Ubuntu);
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap");
+
+$space: 8px;
+$roundness: 6px;
+
+.head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: 1fr auto auto;
+  gap: 0px $space;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "avatar name options"
+    "avatar time options";
+  margin: $space;
+}
+
+.name {
+  grid-area: name;
+  font-size: 16px;
+  font-weight: 600;
+  color: black;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline #000 1px solid;
+  }
+}
+.time {
+  grid-area: time;
+  font-size: 14px;
+  color: #bbb;
+}
+.avatar {
+  grid-area: avatar;
+  img {
+    border-radius: $roundness;
+    display: block;
+    width: 40px;
+  }
+}
+
+.options {
+  grid-area: options;
+  width: 40px;
+}

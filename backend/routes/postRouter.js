@@ -11,37 +11,37 @@ import Comment from "../models/commentModel.js";
 const router = express.Router();
 
 router.get("/", async (request, response, next) => {
-  let { pos, n } = request.query;
-  [pos, n] = [+(pos ?? 0), +(n ?? -2)];
+  let pos = request.query.pos ?? 0;
+  let n = request.query.n ?? 2;
+
   await Post.find()
-    .slice("comments", pos ? [pos, n] : n)
+    .populate("user", "firstName secondName avatar")
     .populate({
       path: "comments",
-      options: { sort: { createdAt: -1 } },
+      skip: pos,
+      limit: n,
+      options: { sort: { createdAt: "desc" } },
       populate: {
         path: "user",
-        select: "firstName secondName avatar createdAt",
+        select: "firstName secondName avatar",
       },
     })
     .exec()
     .then((resource) => response.json(resource))
-    .catch((err) => next(err)) //response.status(400).json("Error" + err))
+    .catch(next) //response.status(400).json("Error" + err))
     .then(console.log("url:", request.originalUrl));
 });
 
 router.get("/:id", async (request, response, next) => {
-  let { pos, n } = request.query;
-  [pos, n] = [+pos, +n];
-  await Post.find(
-    { _id: ObjectId(request.params.id) },
-    {
-      comments: {
-        $slice: pos ? [pos, n] : n,
-      },
-    }
-  )
+  let pos = request.query.pos ?? 0;
+  let n = request.query.n ?? 2;
+
+  await Post.find({ _id: request.params.id })
     .populate({
       path: "comments",
+      skip: pos,
+      limit: n,
+      options: { sort: { createdAt: "desc" } },
       populate: {
         path: "user",
         select: "firstName secondName avatar",

@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import jwt from "jsonwebtoken";
 
-import baseRouter from "./routes/baseRoute.js";
+import baseRouter, { baseroute } from "./routes/baseRoute.js";
 import userRoute from "./routes/userRoute.js";
 import accountRouter from "./routes/accountRouter.js";
 import authorization from "./middleware/auth.js";
@@ -55,7 +55,7 @@ app.get("/test", (req, res) => {
 
 app.use("/account", accountRouter);
 
-const chatRouter = new baseRouter(Chat).router;
+const chatRouter = baseroute(Chat);
 
 app.use("/api/users", authorization, userRoute);
 app.use("/api/chats", authorization, chatRouter);

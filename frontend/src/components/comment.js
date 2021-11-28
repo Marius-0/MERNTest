@@ -103,7 +103,7 @@ export function NewComment({ updateCommentList, postID }) {
   );
 }
 
-export default function Comment({ user, body, createdAt }) {
+export default function Comment({ user, text, createdAt }) {
   const getTime = (time_var) => moment(time_var).fromNow();
 
   return (
@@ -125,7 +125,7 @@ export default function Comment({ user, body, createdAt }) {
             {" • " + getTime(createdAt)}
           </>
         }
-        primary={body}
+        primary={text}
       />
     </ListItem>
   );

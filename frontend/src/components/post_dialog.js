@@ -11,8 +11,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import React, { useContext, useState, useEffect } from "react";
 import UserContext from "../contexts/user.js";
 
-import { useAuth } from "./userContext.js";
-
 const useStyles = makeStyles({});
 
 export default function PostDialog({ open, onClose, onPost }) {

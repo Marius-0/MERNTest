@@ -1,15 +1,5 @@
 import "./App.css";
-import { makeStyles } from "@material-ui/core/styles";
-import React, {
-  createContext,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useContext,
-  Suspense,
-  lazy,
-} from "react";
+import React, { useEffect, useState } from "react";
 
 import Signup from "./components/signup.js";
 import Login from "./components/login.js";
@@ -19,14 +9,9 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
-  Redirect,
   useHistory,
-  withRouter,
 } from "react-router-dom";
-import { get } from "./services/fetch_crud.js";
 
-import { UserProvider } from "./components/userContext";
 import axios from "axios";
 
 import UserContext from "./contexts/user.js";
